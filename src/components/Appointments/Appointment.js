@@ -24,7 +24,7 @@ const Appointment = ({appointment}) => {
                         </div>
                         <div className="col s6 m6">
                             <div>{appointment.employee.firstName + " " + appointment.employee.lastName}</div>
-                            <img className="materialboxed" src={appointment.employee.picture} width="200" />
+                            <img className="materialboxed" src={appointment.employee.picture} width="200" height="120" />
                         </div>
                     </div>
                 </div>
