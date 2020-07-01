@@ -9,14 +9,6 @@ class Login extends Component {
         password: ''
     }
 
-    componentDidMount() {
-        const { auth } = this.props;
-
-        if(auth.uid) {
-            this.props.history.push('/');
-        }
-    };
-
     handleSubmits = async (e) => {
         e.preventDefault();
         

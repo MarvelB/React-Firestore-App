@@ -86,7 +86,6 @@ class SingUp extends Component {
                             <button className="btn green z-depth-2" type="submit">Sign Up</button>
                         </div>
                         <span className="red-text darken-text-4" name="errors">{authError}</span>
-                        <span className="red-text darken-text-4" name="errors">{this.state.validationErr}</span>
                     </form>
                 </div>
             </Main>
