@@ -1,13 +1,21 @@
 const initState = {
-    appointments: []
+    authError: null,
+    success: null
 }
 
 const appointmentReducer = (state = initState, action) => {
     switch (action.type) {
         case 'CREATE_APPOINTMENT':
-            return state;
+            return {
+                ...state,
+                authError: null,
+                success: action.success
+            }
         case 'CREATE_APPOINTMENT_ERROR':
-            return state;
+            return {
+                ...state,
+                authError: action.err.message
+            }
         default:
             return state;
     }
