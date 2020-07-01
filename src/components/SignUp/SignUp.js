@@ -57,19 +57,19 @@ class SingUp extends Component {
                     <form  className="white">
                         <h5 className="brown-text text-darken-3">Sign Up</h5>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="email" type="email" className="validate" required="" aria-required="true" />
+                            <input onChange={this.handleChange} id="email" type="email" className="validate" required="true" aria-required="true" />
                             <label htmlFor="email">Email</label>
                         </div>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="password" type="password" className="validate" required="" aria-required="true" />
+                            <input onChange={this.handleChange} id="password" type="password" className="validate" required="true" aria-required="true" />
                             <label htmlFor="password">Password</label>
                         </div>
                         <div className="input-field"> 
-                            <input onChange={this.handleChange} id="firstName" type="text" className="validate" required="" aria-required="true" />
+                            <input onChange={this.handleChange} id="firstName" type="text" className="validate" required="true" aria-required="true" />
                             <label htmlFor="firstName">First Name</label>
                         </div>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="lastName" type="text" className="validate" required="" aria-required="true" />
+                            <input onChange={this.handleChange} id="lastName" type="text" className="validate" required="true" aria-required="true" />
                             <label htmlFor="lastName">Last Name</label>
                         </div>
                         <div className="file-field input-field">
@@ -83,7 +83,7 @@ class SingUp extends Component {
                         </div>
                         <img className="materialboxed" width="300" src={this.state.pictureUrl} />
                         <div className="input-field">
-                            <button className="btn green z-depth-2" type="submit" name="action">Sign Up</button>
+                            <button className="btn green z-depth-2" type="submit">Sign Up</button>
                         </div>
                         <span className="red-text darken-text-4" name="errors">{authError}</span>
                         <span className="red-text darken-text-4" name="errors">{this.state.validationErr}</span>
