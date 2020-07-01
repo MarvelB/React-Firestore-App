@@ -10,7 +10,7 @@ const Navbar = (props) => {
     const { auth, profile } = props;
     const inOrOutLinks = auth.uid ? (
         <>
-            <li><NavLink onClick={props.signOut}>Sign Out</NavLink></li>
+            <li><NavLink to="/" onClick={props.signOut}>Sign Out</NavLink></li>
             <li>
                 <div className="sidenav-trigger" data-target="slide-out">
                 <NavLink to="#" className="btn btn-floating red">{ profile.initials }</NavLink>

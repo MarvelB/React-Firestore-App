@@ -53,28 +53,28 @@ class SingUp extends Component {
 
         return (
             <Main>
-                <div className="container">
-                    <form onSubmit={this.handleSubmits} className="white">
+                <div className="container" onSubmit={this.handleSubmits}>
+                    <form  className="white">
                         <h5 className="brown-text text-darken-3">Sign Up</h5>
                         <div className="input-field">
+                            <input onChange={this.handleChange} id="email" type="email" className="validate" required="" aria-required="true" />
                             <label htmlFor="email">Email</label>
-                            <input onChange={this.handleChange} id="email" type="email" className="validate" />
                         </div>
                         <div className="input-field">
+                            <input onChange={this.handleChange} id="password" type="password" className="validate" required="" aria-required="true" />
                             <label htmlFor="password">Password</label>
-                            <input onChange={this.handleChange} id="password" type="password" className="validate" />
                         </div>
-                        <div className="input-field">
+                        <div className="input-field"> 
+                            <input onChange={this.handleChange} id="firstName" type="text" className="validate" required="" aria-required="true" />
                             <label htmlFor="firstName">First Name</label>
-                            <input onChange={this.handleChange} id="firstName" type="text" className="validate" />
                         </div>
                         <div className="input-field">
+                            <input onChange={this.handleChange} id="lastName" type="text" className="validate" required="" aria-required="true" />
                             <label htmlFor="lastName">Last Name</label>
-                            <input onChange={this.handleChange} id="lastName" type="text" className="validate" />
                         </div>
                         <div className="file-field input-field">
                             <div className="btn">
-                                <span>File</span>
+                                <span>Profile Picture</span>
                                 <input type="file" onChange={this.displayPicture} />
                             </div>
                             <div className="file-path-wrapper">
@@ -83,7 +83,7 @@ class SingUp extends Component {
                         </div>
                         <img className="materialboxed" width="300" src={this.state.pictureUrl} />
                         <div className="input-field">
-                            <button className="btn green z-depth-2">Sign Up</button>
+                            <button className="btn green z-depth-2" type="submit" name="action">Sign Up</button>
                         </div>
                         <span className="red-text darken-text-4" name="errors">{authError}</span>
                         <span className="red-text darken-text-4" name="errors">{this.state.validationErr}</span>
