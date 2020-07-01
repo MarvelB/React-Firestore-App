@@ -38,6 +38,7 @@ export const signUp = (newUser) => {
       ).then(resp => {
 
         if(newUser.picture){
+          
           storage.child(`users/${new Date().getTime()}`).put(newUser.picture).then((snapshot) => {
             storage.child(snapshot.metadata.fullPath).getDownloadURL().then((url) => {
               return firestore.collection('users').doc(resp.user.uid).set({

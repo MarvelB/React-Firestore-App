@@ -57,19 +57,19 @@ class SingUp extends Component {
                     <form  className="white">
                         <h5 className="brown-text text-darken-3">Sign Up</h5>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="email" type="email" className="validate" required="true" aria-required="true" />
+                            <input onChange={this.handleChange} id="email" type="email" className="validate" required={true} aria-required={true} />
                             <label htmlFor="email">Email</label>
                         </div>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="password" type="password" className="validate" required="true" aria-required="true" />
+                            <input onChange={this.handleChange} id="password" type="password" className="validate" required={true} aria-required={true} />
                             <label htmlFor="password">Password</label>
                         </div>
                         <div className="input-field"> 
-                            <input onChange={this.handleChange} id="firstName" type="text" className="validate" required="true" aria-required="true" />
+                            <input onChange={this.handleChange} id="firstName" type="text" className="validate" required={true} aria-required={true} />
                             <label htmlFor="firstName">First Name</label>
                         </div>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="lastName" type="text" className="validate" required="true" aria-required="true" />
+                            <input onChange={this.handleChange} id="lastName" type="text" className="validate" required={true} aria-required={true} />
                             <label htmlFor="lastName">Last Name</label>
                         </div>
                         <div className="file-field input-field">
