@@ -6,7 +6,7 @@ export const signIn = (credentials) => {
             credentials.email,
             credentials.password
         ).then(() => {
-            dispatch({ type: 'LOGIN_SUCCESS'});
+            dispatch({ type: 'LOGIN_SUCCESS', success: 'Signed In'});
         }).catch((err) => {
             dispatch({ type: 'LOGIN_ERROR', err});
         });
@@ -29,8 +29,22 @@ export const signUp = (newUser) => {
     const firebase = getFirebase();
     const storage = firebase.storage().ref();
     const firestore = getFirestore();
+    var err = {
+      message: ''
+    }
 
-    if(newUser.firstName && newUser.lastName){
+    if(!newUser.email)
+        err.message = "Provide an email address";
+    else if(!newUser.password)
+        err.message = "Provide a password";
+    else if(!newUser.firstName)
+        err.message = "Provide your first name";
+    else if(!newUser.lastName)
+        err.message = "Provide your last name";
+    else
+        err.message = "";
+
+    if(err.message){
       
       firebase.auth().createUserWithEmailAndPassword(
         newUser.email, 
@@ -62,12 +76,12 @@ export const signUp = (newUser) => {
         }
         
       }).then(() => {
-        dispatch({ type: 'SIGNUP_SUCCESS' });
+        dispatch({ type: 'SIGNUP_SUCCESS', success: 'Signed up' });
       }).catch((err) => {
         dispatch({ type: 'SIGNUP_ERROR', err});
       });
     }
     else
-      dispatch({ type: 'SIGNUP_ERROR', err: {message: 'Please provide name and/or lastname'}});
+      dispatch({ type: 'SIGNUP_ERROR', err});
   }
 }
