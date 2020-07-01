@@ -5,6 +5,7 @@ import { createAppointment } from "../../store/actions/appointmentsActions";
 import { compose } from "redux";
 import { DatePicker } from "react-materialize";
 import { firestoreConnect } from "react-redux-firebase";
+import { withRouter } from "react-router-dom"
 import moment from "moment";
 
 class CreateAppointment extends Component {
@@ -13,6 +14,13 @@ class CreateAppointment extends Component {
         hairStyle: null,
         nailStyle: null, 
         employee: null
+    }
+
+    componentDidMount(){
+        const { success } = this.props;
+        if(success){
+            this.props.history.push('/appointments')
+        }
     }
 
     handleCalendar = (e) => {
@@ -28,7 +36,6 @@ class CreateAppointment extends Component {
         e.preventDefault();
 
         this.props.createAppointment(this.state);
-        this.props.history.push('/appointments');
     };
 
     handleChange = (e) => {
@@ -70,8 +77,7 @@ class CreateAppointment extends Component {
     }
 
     render() {
-        const { nails, hairStyles, employees, timeSlots } = this.props;
-        
+        const { nails, hairStyles, employees, timeSlots, authError, success } = this.props;
         
         return (
             <Main>
@@ -80,12 +86,12 @@ class CreateAppointment extends Component {
                         <h5 className="brown-text text-darken-2">Create Appointment</h5>
                         <div className="input-field">
                             <label htmlFor="description">Description</label>
-                            <textarea id="description" className="materialize-textarea" onChange={this.handleChange}></textarea>
+                            <textarea id="description" className="materialize-textarea" onChange={this.handleChange} required={true} aria-required={true}></textarea>
                         </div>
                         
                         <div className="row">
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleHairStyleChange} defaultValue={'DEFAULT'} id="hairStyle">
+                                <select className="browser-default" onChange={this.handleHairStyleChange} defaultValue={'DEFAULT'} id="hairStyle" required={true} aria-required={true}>
                                     <option value="DEFAULT" disabled>Select Hair Style</option>
                                     {hairStyles && hairStyles.map((hairStyle) =>{
                                         return <option key={hairStyle.id} value={hairStyle.id}>{hairStyle.style}</option>
@@ -106,7 +112,7 @@ class CreateAppointment extends Component {
                                 }
                             </div>
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleNailStyleChange} defaultValue={'DEFAULT'} id="nailStyle">
+                                <select className="browser-default" onChange={this.handleNailStyleChange} defaultValue={'DEFAULT'} id="nailStyle" required={true} aria-required={true}>
                                     <option value="DEFAULT" disabled>Select Nail Style</option>
                                     {nails && nails.map((nail) =>{
                                         return <option key={nail.id} value={nail.id}>{nail.style}</option>
@@ -130,7 +136,7 @@ class CreateAppointment extends Component {
 
                         <div className="row">
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleEmployeeChange} defaultValue={'DEFAULT'} id="employee">
+                                <select className="browser-default" onChange={this.handleEmployeeChange} defaultValue={'DEFAULT'} id="employee" required={true} aria-required={true}>
                                     <option value="DEFAULT" disabled>Select Employee</option>
                                     {employees && employees.map(employee => <option key={employee.id} value={employee.id}>{employee.firstName + " " + employee.lastName}</option>)}
                                 </select>
@@ -157,14 +163,15 @@ class CreateAppointment extends Component {
                                     }} />
                             </div>
                             </React.Fragment>
-                            <select className="browser-default col s6 m6" onChange={this.handleTimeSlotsChange} defaultValue={'DEFAULT'} id="timeSlot">
+                            <select className="browser-default col s6 m6" onChange={this.handleTimeSlotsChange} defaultValue={'DEFAULT'} id="timeSlot" required={true} aria-required={true}>
                                 <option value="DEFAULT" disabled>Select Time Slot</option>
                                 {timeSlots && timeSlots.map((timeSlot) =>{
                                     return <option key={timeSlot.id} value={timeSlot.id}>{timeSlot.from} - {timeSlot.to}</option>
                                 })}
                             </select>
                         </div>
-                                   
+                        <span className="red-text darken-text-4" name="errors">{authError}</span>
+                        
                         <div className="input-field">
                             <button className="btn green z-depth-2">Create Appointment</button>
                         </div>
@@ -187,7 +194,9 @@ const mapStateToProps = (state) => {
         hairStyles: state.firestore.ordered.hairStyles,
         nails: state.firestore.ordered.nails,
         employees: state.firestore.ordered.employees,
-        timeSlots: state.firestore.ordered.timeSlots
+        timeSlots: state.firestore.ordered.timeSlots,
+        authError: state.appointments.authError,
+        success: state.appointments.success
     };
 };
 
@@ -202,4 +211,4 @@ export default compose(
         },
         { collection: 'timeSlots', orderBy: ['createdAt', 'asc']}
     ])
-)(CreateAppointment);
+)(withRouter(CreateAppointment));
