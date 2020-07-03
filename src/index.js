@@ -24,6 +24,8 @@ const rrfConfig = {
   useFirestoreForProfile: true
 }
 
+const generalCOfig = {...firebaseConf,...rrfConfig}
+
 const rrfProps = {
   firebase,
   config: firebaseConf,

@@ -44,7 +44,7 @@ export const signUp = (newUser) => {
     else
         err.message = "";
 
-    if(err.message){
+    if(!err.message){
       
       firebase.auth().createUserWithEmailAndPassword(
         newUser.email, 
