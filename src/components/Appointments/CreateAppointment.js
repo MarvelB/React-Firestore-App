@@ -13,14 +13,8 @@ class CreateAppointment extends Component {
         description: '', 
         hairStyle: null,
         nailStyle: null, 
-        employee: null
-    }
-
-    componentDidMount(){
-        const { success } = this.props;
-        if(success){
-            this.props.history.push('/appointments')
-        }
+        employee: null,
+        success: ''
     }
 
     handleCalendar = (e) => {
@@ -44,40 +38,27 @@ class CreateAppointment extends Component {
         })
     }
 
-    handleEmployeeChange = (e) => {
-        const inEmployee = this.props.employees ? this.props.employees.filter(emp => e.target.value === emp.id) : null;
+    //This fucntion is built to be used with dropdown menus in this component
+    handleDropDownChange = (e) => {
+        const dropodownSelection = this.props[e.target.id + 's'] ? this.props[e.target.id + 's'].filter(currObj => e.target.value === currObj.id) : null;
         
-        this.setState({
-            employee: inEmployee[0]
-        })
+        if(dropodownSelection){
+            this.setState({
+                [e.target.id]: dropodownSelection[0]
+            });
+        }
     }
 
-    handleHairStyleChange = (e) => {
-        const inHair = this.props.hairStyles ? this.props.hairStyles.filter(hairStyle => e.target.value === hairStyle.id) : null;
-        
-        this.setState({
-            hairStyle: inHair[0]
-        })
-    }
-
-    handleNailStyleChange = (e) => {
-        const inNail = this.props.nails ? this.props.nails.filter(nailStyle => e.target.value === nailStyle.id) : null;
-        
-        this.setState({
-            nailStyle: inNail[0]
-        });
-    }
-
-    handleTimeSlotsChange = (e) => {
-        const inTimeSlot = this.props.timeSlots ? this.props.timeSlots.filter(timeSlot => e.target.value === timeSlot.id) : null;
-        
-        this.setState({
-            timeSlot: inTimeSlot[0]
-        });
+    componentDidMount() {
+        this.setState({success: ''})
     }
 
     render() {
-        const { nails, hairStyles, employees, timeSlots, authError, success } = this.props;
+        const { nailStyles, hairStyles, employees, timeSlots, authError, success } = this.props;
+
+        if(success){
+            this.props.history.push('/appointments');
+        }
         
         return (
             <Main>
@@ -91,7 +72,7 @@ class CreateAppointment extends Component {
                         
                         <div className="row">
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleHairStyleChange} defaultValue={'DEFAULT'} id="hairStyle" required={true} aria-required={true}>
+                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="hairStyle" required={true} aria-required={true}>
                                     <option value="DEFAULT" disabled>Select Hair Style</option>
                                     {hairStyles && hairStyles.map((hairStyle) =>{
                                         return <option key={hairStyle.id} value={hairStyle.id}>{hairStyle.style}</option>
@@ -112,9 +93,9 @@ class CreateAppointment extends Component {
                                 }
                             </div>
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleNailStyleChange} defaultValue={'DEFAULT'} id="nailStyle" required={true} aria-required={true}>
+                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="nailStyle" required={true} aria-required={true}>
                                     <option value="DEFAULT" disabled>Select Nail Style</option>
-                                    {nails && nails.map((nail) =>{
+                                    {nailStyles && nailStyles.map((nail) =>{
                                         return <option key={nail.id} value={nail.id}>{nail.style}</option>
                                     })}
                                 </select>
@@ -136,7 +117,7 @@ class CreateAppointment extends Component {
 
                         <div className="row">
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleEmployeeChange} defaultValue={'DEFAULT'} id="employee" required={true} aria-required={true}>
+                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="employee" required={true} aria-required={true}>
                                     <option value="DEFAULT" disabled>Select Employee</option>
                                     {employees && employees.map(employee => <option key={employee.id} value={employee.id}>{employee.firstName + " " + employee.lastName}</option>)}
                                 </select>
@@ -163,7 +144,7 @@ class CreateAppointment extends Component {
                                     }} />
                             </div>
                             </React.Fragment>
-                            <select className="browser-default col s6 m6" onChange={this.handleTimeSlotsChange} defaultValue={'DEFAULT'} id="timeSlot" required={true} aria-required={true}>
+                            <select className="browser-default col s6 m6" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="timeSlot" required={true} aria-required={true}>
                                 <option value="DEFAULT" disabled>Select Time Slot</option>
                                 {timeSlots && timeSlots.map((timeSlot) =>{
                                     return <option key={timeSlot.id} value={timeSlot.id}>{timeSlot.from} - {timeSlot.to}</option>
@@ -192,7 +173,7 @@ const mapStateToProps = (state) => {
     
     return {
         hairStyles: state.firestore.ordered.hairStyles,
-        nails: state.firestore.ordered.nails,
+        nailStyles: state.firestore.ordered.nails,
         employees: state.firestore.ordered.employees,
         timeSlots: state.firestore.ordered.timeSlots,
         authError: state.appointments.authError,
