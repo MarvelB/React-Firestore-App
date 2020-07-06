@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Main from "../Main/Main";
-import { createAppointment } from "../../store/actions/appointmentsActions";
+import { createAppointment, restore } from "../../store/actions/appointmentsActions";
 import { compose } from "redux";
 import { DatePicker } from "react-materialize";
 import { firestoreConnect } from "react-redux-firebase";
@@ -14,7 +14,8 @@ class CreateAppointment extends Component {
         hairStyle: null,
         nailStyle: null, 
         employee: null,
-        success: ''
+        day: null,
+        timeSlot: null
     }
 
     handleCalendar = (e) => {
@@ -49,14 +50,11 @@ class CreateAppointment extends Component {
         }
     }
 
-    componentDidMount() {
-        this.setState({success: ''})
-    }
-
     render() {
         const { nailStyles, hairStyles, employees, timeSlots, authError, success } = this.props;
 
         if(success){
+            this.props.restore();
             this.props.history.push('/appointments');
         }
         
@@ -67,17 +65,19 @@ class CreateAppointment extends Component {
                         <h5 className="brown-text text-darken-2">Create Appointment</h5>
                         <div className="input-field">
                             <label htmlFor="description">Description</label>
-                            <textarea id="description" className="materialize-textarea" onChange={this.handleChange} required={true} aria-required={true}></textarea>
+                            <textarea id="description" className="materialize-textarea" onChange={this.handleChange} ></textarea>
+                            <span className="red-text darken-text-4" name="errors">{authError && authError.description}</span>
                         </div>
                         
                         <div className="row">
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="hairStyle" required={true} aria-required={true}>
+                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="hairStyle">
                                     <option value="DEFAULT" disabled>Select Hair Style</option>
                                     {hairStyles && hairStyles.map((hairStyle) =>{
                                         return <option key={hairStyle.id} value={hairStyle.id}>{hairStyle.style}</option>
                                     })}
                                 </select>
+                                <span className="red-text darken-text-4" name="errors">{authError && authError.hairStyle}</span>
                                 { this.state.hairStyle ? 
                                     <div className="">
                                         <div className="card z-depth-2 appointment-summary">
@@ -93,12 +93,13 @@ class CreateAppointment extends Component {
                                 }
                             </div>
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="nailStyle" required={true} aria-required={true}>
+                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="nailStyle">
                                     <option value="DEFAULT" disabled>Select Nail Style</option>
                                     {nailStyles && nailStyles.map((nail) =>{
                                         return <option key={nail.id} value={nail.id}>{nail.style}</option>
                                     })}
                                 </select>
+                                <span className="red-text darken-text-4" name="errors">{authError && authError.nailStyle}</span>
                                 { this.state.nailStyle ? 
                                     <div className="">
                                         <div className="card z-depth-2 appointment-summary">
@@ -117,10 +118,11 @@ class CreateAppointment extends Component {
 
                         <div className="row">
                             <div className="input-field col s6 m6">
-                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="employee" required={true} aria-required={true}>
+                                <select className="browser-default" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="employee">
                                     <option value="DEFAULT" disabled>Select Employee</option>
                                     {employees && employees.map(employee => <option key={employee.id} value={employee.id}>{employee.firstName + " " + employee.lastName}</option>)}
                                 </select>
+                                <span className="red-text darken-text-4" name="errors">{authError && authError.employee}</span>
                             </div>
                             <div className="col s6 m6">
                                 { this.state.employee ? <img className="materialboxed" src={this.state.employee.picture} width="300" /> : null }
@@ -142,16 +144,18 @@ class CreateAppointment extends Component {
                                             }
                                         })
                                     }} />
+                                <span className="red-text darken-text-4" name="errors">{authError && authError.day}</span>
                             </div>
                             </React.Fragment>
-                            <select className="browser-default col s6 m6" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="timeSlot" required={true} aria-required={true}>
+
+                            <select className="browser-default col s6 m6" onChange={this.handleDropDownChange} defaultValue={'DEFAULT'} id="timeSlot">
                                 <option value="DEFAULT" disabled>Select Time Slot</option>
                                 {timeSlots && timeSlots.map((timeSlot) =>{
                                     return <option key={timeSlot.id} value={timeSlot.id}>{timeSlot.from} - {timeSlot.to}</option>
                                 })}
                             </select>
+                            <span className="red-text darken-text-4" name="errors">{authError && authError.timeSlot}</span>
                         </div>
-                        <span className="red-text darken-text-4" name="errors">{authError}</span>
                         
                         <div className="input-field">
                             <button className="btn green z-depth-2">Create Appointment</button>
@@ -166,6 +170,7 @@ class CreateAppointment extends Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         createAppointment: (appointment) => dispatch(createAppointment(appointment)),
+        restore: () => dispatch(restore())
     }
 }
 
