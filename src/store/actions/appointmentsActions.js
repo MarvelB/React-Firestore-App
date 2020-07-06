@@ -6,27 +6,16 @@ export const createAppointment = (appointment) => {
         const profile = getState().firebase.profile;
         const authorId = getState().firebase.auth.uid;
         
-        var err = {
-            message: ''
+        var err = null;
+
+        for(const field in appointment) {
+            if(!appointment[field] ){
+                err = {...err, [field]: 'provide a valid ' + field + ' value'};
+            }
         }
-
-        if(!appointment.description)
-            err.message = "Provide an appointment description";
-        else if(!appointment.hairStyle)
-            err.message = "Select a Hair Style";
-        else if(!appointment.nailStyle)
-            err.message = "Select a Nail Style";
-        else if(!appointment.employee)
-            err.message = "Select an Employee";
-        else if(!appointment.day)
-            err.message = "Select a Date for your appointment";
-        else if(!appointment.timeSlot)
-            err.message = "Select a Time Slot for your appointment";
-        else
-            err.message = "";
-
-        if(!err.message){
-
+        
+        if(!err){
+            console.log('here')
             appointment.day = appointment.day.toString();
 
             firestore.collection('appointments').add({
@@ -45,3 +34,9 @@ export const createAppointment = (appointment) => {
         }      
     }
 };
+
+export const restore = () => {
+    return (dispatch, getState, { getFirebase, getFirestore}) => {
+        dispatch({ type: 'RESTORE'})
+    }
+}
