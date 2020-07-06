@@ -14,7 +14,14 @@ const appointmentReducer = (state = initState, action) => {
         case 'CREATE_APPOINTMENT_ERROR':
             return {
                 ...state,
-                authError: action.err.message
+                authError: action.err,
+                success: null
+            }
+        case 'RESTORE':
+            return{
+                ...state,
+                authError: null,
+                success: null
             }
         default:
             return state;
