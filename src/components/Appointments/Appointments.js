@@ -38,6 +38,7 @@ export default compose(
             { collection: 'appointments',
             where: [['custId', '==', props.auth.uid]],
             storeAs: 'appointments'
+            //orderBy: ['day', 'desc']
             }
         ];
     })

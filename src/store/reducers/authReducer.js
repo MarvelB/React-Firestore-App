@@ -31,6 +31,11 @@ const authReducer = (state = initState, action) => {
                 ...state,
                 authError: action.err.message
             }
+        case 'MISSING_DATA':
+            return {
+                ...state,
+                incompleteData: action.err
+            }
         default:
             return state;
     }

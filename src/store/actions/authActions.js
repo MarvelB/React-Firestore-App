@@ -29,22 +29,15 @@ export const signUp = (newUser) => {
     const firebase = getFirebase();
     const storage = firebase.storage().ref();
     const firestore = getFirestore();
-    var err = {
-      message: ''
+    var err = null;
+
+    for(const field in newUser) {
+      if(!newUser[field] && ([field] != 'picture' && [field] != 'pictureUrl' && [field] != 'employee')){
+          err = {...err, [field]: 'Please provide a valid ' + field};
+      }
     }
-
-    if(!newUser.email)
-        err.message = "Provide an email address";
-    else if(!newUser.password)
-        err.message = "Provide a password";
-    else if(!newUser.firstName)
-        err.message = "Provide your first name";
-    else if(!newUser.lastName)
-        err.message = "Provide your last name";
-    else
-        err.message = "";
-
-    if(!err.message){
+    
+    if(!err){
       
       firebase.auth().createUserWithEmailAndPassword(
         newUser.email, 
@@ -82,6 +75,6 @@ export const signUp = (newUser) => {
       });
     }
     else
-      dispatch({ type: 'SIGNUP_ERROR', err});
+      dispatch({ type: 'MISSING_DATA', err});
   }
 }
