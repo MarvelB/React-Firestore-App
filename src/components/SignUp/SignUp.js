@@ -21,14 +21,6 @@ class SingUp extends Component {
         this.props.signUp(this.state)
     };
 
-    componentDidMount() {
-        const { auth } = this.props;
-
-        if(auth.uid) {
-            this.props.history.push('/');
-        }
-    };
-
     handleChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
@@ -49,7 +41,7 @@ class SingUp extends Component {
     }
 
     render() {
-        const { authError } = this.props;
+        const { authError, incompleteData } = this.props;
 
         return (
             <Main>
@@ -57,20 +49,24 @@ class SingUp extends Component {
                     <form  className="white">
                         <h5 className="brown-text text-darken-3">Sign Up</h5>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="email" type="email" className="validate" required={true} aria-required={true} />
+                            <input onChange={this.handleChange} id="email" type="email" className="validate" />
                             <label htmlFor="email">Email</label>
+                            <span className="red-text darken-text-4" name="errors">{incompleteData && incompleteData.email}</span>
                         </div>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="password" type="password" className="validate" required={true} aria-required={true} />
+                            <input onChange={this.handleChange} id="password" type="password" className="validate" />
                             <label htmlFor="password">Password</label>
+                            <span className="red-text darken-text-4" name="errors">{incompleteData && incompleteData.password}</span>
                         </div>
                         <div className="input-field"> 
-                            <input onChange={this.handleChange} id="firstName" type="text" className="validate" required={true} aria-required={true} />
+                            <input onChange={this.handleChange} id="firstName" type="text" className="validate" />
                             <label htmlFor="firstName">First Name</label>
+                            <span className="red-text darken-text-4" name="errors">{incompleteData && incompleteData.firstName}</span>
                         </div>
                         <div className="input-field">
-                            <input onChange={this.handleChange} id="lastName" type="text" className="validate" required={true} aria-required={true} />
+                            <input onChange={this.handleChange} id="lastName" type="text" className="validate" />
                             <label htmlFor="lastName">Last Name</label>
+                            <span className="red-text darken-text-4" name="errors">{incompleteData && incompleteData.lastName}</span>
                         </div>
                         <div className="file-field input-field">
                             <div className="btn">
@@ -96,7 +92,8 @@ class SingUp extends Component {
 const mapStateToProps = (state) => {
     return {
         auth: state.firebase.auth,
-        authError: state.auth.authError
+        authError: state.auth.authError,
+        incompleteData: state.auth.incompleteData
     }
 }
 
