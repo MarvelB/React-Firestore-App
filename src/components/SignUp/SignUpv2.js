@@ -21,7 +21,7 @@ const SingUp = (props) => {
         var err = null;
 
         for(const field in inputs) {
-            if(!inputs[field] && ([field] != 'picture' && [field] != 'pictureUrl' && [field] != 'employee')){
+            if(!inputs[field] && ([field] != 'pictureUrl' && [field] != 'employee')){
                 err = {...err, [field]: 'Please provide a valid ' + field};
             }
         }
@@ -33,6 +33,7 @@ const SingUp = (props) => {
                 setErrors([])
 
                 if(inputs.picture){
+                    console.log('picture')
                     //Store picture in firebase storage
                     storage.child(`users/${new Date().getTime()}`).put(inputs.picture).then((snapshot) => {
                         //Get downloadUrl for picture stored with above line
@@ -50,20 +51,23 @@ const SingUp = (props) => {
                         console.log(err);
                     })
                 }else{
+                    console.log(inputs)
                     //Create new user
-                    firestore.collection('users').doc(res.user.uid).set({
+                    return firestore.collection('users').doc(res.user.uid).set({
                         firstName: inputs.firstName,
                         lastName: inputs.lastName,
                         initials: inputs.firstName[0] + inputs.lastName[0],
                         employee: inputs.employee,
+                        picture: ''
                     })
                 }
             })
             .catch((err) => {
+                console.log(err)
                 setErrors(err.message)
             })
         }else{
-            setValErrors(prev => ({...err}));
+            setValErrors(err);
         }
     };
 
@@ -128,6 +132,7 @@ const SingUp = (props) => {
                         </div>
                     </div>
                     <img className="materialboxed" width="300" src={inputs.pictureUrl} />
+                    <span className="red-text darken-text-4" name="errors">{valErrors && valErrors.picture}</span>
                     <div className="input-field">
                         <button className="btn green z-depth-2" type="submit">Sign Up</button>
                     </div>

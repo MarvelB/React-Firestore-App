@@ -7,7 +7,7 @@ import { useFirestoreDocData, useUser } from 'reactfire';
 const Sidenav = ({ firestore, firebase }) => {
     //All of this is safe, this component has been wrapped in an 'AuthCheck'
     const user = useUser();
-    const userProfileRef = firestore.collection('users').doc(user.uid);
+    const userProfileRef = firestore.collection('users').doc(user ? user.uid: '1');
 
     const profile = useFirestoreDocData(userProfileRef);
 
