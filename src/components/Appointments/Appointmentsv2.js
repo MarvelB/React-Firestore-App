@@ -1,11 +1,18 @@
 import React from "react";
 import Appointment from "./Appointment";
-import { connect } from "react-redux";
-import { firestoreConnect } from "react-redux-firebase";
-import { compose } from "redux";
-import Main from "../Main/Main";
+import Main from "../Main/Mainv2";
+import { withRouter } from "react-router";
+import { useUser, useFirestore, useFirestoreCollection } from 'reactfire';
 
 const Appointments = ({appointments}) => {
+    const user = useUser();
+    const firestore = useFirestore();
+
+    var appointments = [];
+    const appointmentsRef = useFirestoreCollection(firestore.collection('appointments').where('custId', '==', user? user.uid: '1').orderBy('createdAt', 'desc'));
+    appointmentsRef.forEach(appointment => {
+        appointments.push({...appointment.data(), id: appointment.id})
+    })
     
     return(
         <Main>
@@ -22,24 +29,4 @@ const Appointments = ({appointments}) => {
     )
 }
 
-const mapStateToProps = (state) => {
-    
-    return {
-        appointments: state.firestore.ordered.appointments,
-        auth: state.firebase.auth
-    };
-};
-
-export default compose(
-    connect(mapStateToProps),
-    firestoreConnect((props) => {
-        //console.log(props) 
-        return [
-            { collection: 'appointments',
-            where: [['custId', '==', props.auth.uid]],
-            storeAs: 'appointments'
-            //orderBy: ['day', 'desc']
-            }
-        ];
-    })
-)(Appointments);
+export default withRouter(Appointments);

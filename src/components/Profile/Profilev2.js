@@ -1,8 +1,16 @@
 import React from "react";
-import Main from "../Main/Main";
-import { connect } from "react-redux";
+import Main from "../Main/Mainv2";
+import { withRouter } from "react-router";
+import { useFirestoreDocData, useUser, useFirestore } from 'reactfire';
 
-const Profile = ({profile, auth}) => {
+const Profile = () => {
+    //All of this is safe, this component has been wrapped in an 'AuthCheck'
+    const user = useUser();
+    const firestore = useFirestore();
+    const userProfileRef = firestore.collection('users').doc(user ? user.uid: '1');
+
+    const profile = useFirestoreDocData(userProfileRef);
+
     return(
         <Main>
             <div className="container content white">
@@ -23,10 +31,4 @@ const Profile = ({profile, auth}) => {
     );
 };
 
-const mapStateToProps = (state) => {
-    return {
-        profile: state.firebase.profile,
-    }
-}
-
-export default connect(mapStateToProps)(Profile);
+export default withRouter(Profile);

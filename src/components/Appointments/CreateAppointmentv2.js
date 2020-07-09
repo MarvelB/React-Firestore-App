@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Main from "../Main/Mainv2";
 import { DatePicker } from "react-materialize";
 import { withRouter } from "react-router-dom";
-import { useFirestore, useFirestoreCollection } from 'reactfire';
+import { useFirestore, useFirestoreCollection, useFirestoreDocData, useUser } from 'reactfire';
 import moment from "moment";
 
-const CreateAppointment = () => {
+const CreateAppointment = (props) => {
     const initState = {
         description: '', 
         hairStyle: null,
@@ -17,6 +17,14 @@ const CreateAppointment = () => {
 
     const [appointment, setAppointment] = useState(initState);
     const [valError, setValError] = useState({});
+    const [serverError, setServerError] = useState(null);
+    const [success, setSuccess] = useState(null);
+
+    const user = useUser();
+    const firestore = useFirestore();
+    const userProfileRef = firestore.collection('users').doc(user ? user.uid: '1');
+
+    const profile = useFirestoreDocData(userProfileRef);
 
     ////Section for data retrieval
     const collections = {
@@ -26,22 +34,22 @@ const CreateAppointment = () => {
         timeSlots: []
     }
     
-    const hairRef = useFirestoreCollection(useFirestore().collection('hairStyles'));
+    const hairRef = useFirestoreCollection(firestore.collection('hairStyles'));
     hairRef.forEach(hairStyle => {
         collections.hairStyles.push({...hairStyle.data(), id: hairStyle.id})
     })
 
-    const nailsRef = useFirestoreCollection(useFirestore().collection('nails'));
+    const nailsRef = useFirestoreCollection(firestore.collection('nails'));
     nailsRef.forEach(nailStyle => {
         collections.nailStyles.push({...nailStyle.data(), id: nailStyle.id})
     })
 
-    const timeSlotsRef = useFirestoreCollection(useFirestore().collection('timeSlots'));
+    const timeSlotsRef = useFirestoreCollection(firestore.collection('timeSlots').orderBy('createdAt', 'asc'));
     timeSlotsRef.forEach(timeSlot => {
         collections.timeSlots.push({...timeSlot.data(), id: timeSlot.id})
     })
 
-    const employeesRef = useFirestoreCollection(useFirestore().collection('users').where('employee', '==', true));
+    const employeesRef = useFirestoreCollection(firestore.collection('users').where('employee', '==', true));
     employeesRef.forEach(employee => {
         collections.employees.push({...employee.data(), id: employee.id})
     })
@@ -59,7 +67,34 @@ const CreateAppointment = () => {
     const handleSubmits = async (e) => {
         e.preventDefault();
 
-        this.props.createAppointment(appointment);
+        var err = null;
+
+        for(const field in appointment) {
+            if(!appointment[field]){
+                err = {...err, [field]: 'Please provide a valid ' + field};
+            }
+        }
+
+        if(!err){
+            var day = appointment.day.toString();
+
+            setAppointment(prev => ({...prev, day: day}));
+
+            firestore.collection('appointments').add({
+                ...appointment,
+                custFName: profile.firstName,
+                custLName: profile.lastName,
+                custId: user.uid,
+                createdAt: new Date()
+            }).then(() => {
+                setSuccess('Complete');
+            }).catch((err) => {
+                setServerError(err.message);
+            });
+
+        }else{
+            setValError(err);
+        }
     };
 
     const handleChange = (e) => {
@@ -79,11 +114,12 @@ const CreateAppointment = () => {
         }
     }
 
-    // if(success){
-    //     this.props.restore();
-    //     this.props.history.push('/appointments');
-    // }
-    console.log(appointment)
+    useEffect(() => {
+        if(success){
+            props.history.push('/appointments');
+        }
+    });
+    
     return (
         <Main>
             <div className="container">
@@ -185,6 +221,7 @@ const CreateAppointment = () => {
                     
                     <div className="input-field">
                         <button className="btn green z-depth-2">Create Appointment</button>
+                        <span className="red-text darken-text-4" name="errors">{serverError && serverError.timeSlot}</span>
                     </div>
                 </form>
             </div>
