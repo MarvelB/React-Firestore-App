@@ -14,7 +14,7 @@ const firebaseConf = {
     measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
-firebase.initializeApp(firebaseConf);
+//firebase.initializeApp(firebaseConf);
 //firebase.firestore();
 //firebase.analytics();
 
