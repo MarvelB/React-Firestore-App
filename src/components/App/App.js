@@ -34,6 +34,8 @@ const App = () => {
             <Route exact path="/signup" component={SignUp} />
             <AuthCheck fallback={<Home />}>
                 <Route exact path="/create-appointment" component={CreateAppointment} />
+                <Route exact path="/profile" component={Profile} />
+                <Route exact path="/appointments" component={Appointments} />
             </AuthCheck>
             
         </Switch>
